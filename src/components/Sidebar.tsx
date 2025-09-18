@@ -1,6 +1,7 @@
 import { Home, Clock, BarChart3, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Link, useLocation } from "react-router-dom";
 
 interface SidebarProps {
   isOpen: boolean;
@@ -9,11 +10,12 @@ interface SidebarProps {
 
 const navigationItems = [
   { icon: Home, label: "Home", href: "/" },
-  { icon: Clock, label: "Hora Task x Ponto", href: "/task-time" },
-  { icon: BarChart3, label: "Pesquisa de Satisfação", href: "/satisfaction-survey" },
+  { icon: Clock, label: "Hora Task x Ponto", href: "/hora-task-ponto" },
+  { icon: BarChart3, label: "Pesquisa de Satisfação", href: "/pesquisa-satisfacao" },
 ];
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
+  const location = useLocation();
   return (
     <>
       {/* Overlay */}
@@ -47,20 +49,25 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* Navigation */}
         <nav className="p-4 space-y-2">
-          {navigationItems.map((item) => (
-            <Button
-              key={item.label}
-              variant="ghost"
-              className="w-full justify-start gap-3 h-12 text-left hover:bg-accent hover:text-accent-foreground transition-smooth"
-              onClick={() => {
-                // Handle navigation here
-                onClose();
-              }}
-            >
-              <item.icon className="h-5 w-5" />
-              <span className="text-base">{item.label}</span>
-            </Button>
-          ))}
+          {navigationItems.map((item) => {
+            const isActive = location.pathname === item.href;
+            return (
+              <Link key={item.label} to={item.href} onClick={onClose}>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "w-full justify-start gap-3 h-12 text-left transition-smooth",
+                    isActive 
+                      ? "bg-primary text-primary-foreground" 
+                      : "hover:bg-accent hover:text-accent-foreground"
+                  )}
+                >
+                  <item.icon className="h-5 w-5" />
+                  <span className="text-base">{item.label}</span>
+                </Button>
+              </Link>
+            );
+          })}
         </nav>
       </aside>
     </>
